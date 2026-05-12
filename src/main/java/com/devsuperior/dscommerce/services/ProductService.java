@@ -22,7 +22,7 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public ProductDto findById(Long id) {
 		
-		Product product =  repository.findById(1L).get();
+		Product product =  repository.findById(id).get();
 		return new ProductDto(product);
 		
 	}
@@ -39,14 +39,30 @@ public class ProductService {
 	@Transactional //não precisa do readOnly pq agra vamos salvar no banco
 	public ProductDto insert(ProductDto dto) {
 		
-		Product entiy = new Product();
-		entiy.setName(dto.getName());
-		entiy.setDescription(dto.getDescription());
-		entiy.setPrice(dto.getPrice());
-		entiy.setImgUrl(dto.getImgUrl());
+		Product entity = new Product();
+		copyDtoToEntity(dto,entity);
+		entity = repository.save(entity);
+		return new ProductDto(entity);
+	}
+	
+	
+	@Transactional 
+	public ProductDto update(Long id, ProductDto dto) {
 		
-		entiy = repository.save(entiy);
+		Product entity = repository.getReferenceById(id);
+		copyDtoToEntity(dto,entity);
+		entity = repository.save(entity);
+		return new ProductDto(entity);
+	}
+
+
+	private void copyDtoToEntity(ProductDto dto, Product entity) {
+		// TODO Auto-generated method stub
 		
-		return new ProductDto(entiy);
+		entity.setName(dto.getName());
+		entity.setDescription(dto.getDescription());
+		entity.setPrice(dto.getPrice());
+		entity.setImgUrl(dto.getImgUrl());
+		
 	}
 }
