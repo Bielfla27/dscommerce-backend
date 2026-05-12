@@ -35,4 +35,18 @@ public class ProductService {
 		return result.map(x -> new ProductDto(x));
 		
 	}
+	
+	@Transactional //não precisa do readOnly pq agra vamos salvar no banco
+	public ProductDto insert(ProductDto dto) {
+		
+		Product entiy = new Product();
+		entiy.setName(dto.getName());
+		entiy.setDescription(dto.getDescription());
+		entiy.setPrice(dto.getPrice());
+		entiy.setImgUrl(dto.getImgUrl());
+		
+		entiy = repository.save(entiy);
+		
+		return new ProductDto(entiy);
+	}
 }
